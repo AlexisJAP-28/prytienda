@@ -10,14 +10,18 @@ Este es el archivo que se ejecuta para USAR el programa.
 #     python main.py
 """
 
-##from vista.view_marca import Vista as VistaMarca
-##from vista.view_categoria import Vista as VistaCategoria
-##from vista.view_linea import Vista as VistaLinea
-##from vista.view_producto import Vista as VistaProducto
+#from vista.view_marca import Vista as VistaMarca
+#from vista.view_categoria import Vista as VistaCategoria
+from vista.view_linea import Vista as VistaLinea
+#from vista.view_producto import Vista as VistaProducto
 
 def main():
     try:
         # Menu general: se repite hasta que el usuario elige salir.
+        #funciones_marcas = VistaMarca()
+        funciones_lineas = VistaLinea()
+        #funciones_productos = VistaProducto()
+
         while True:
             print("\n===== QUE QUIERES GESTIONAR? =====")
             print("1. Marcas")
@@ -32,7 +36,7 @@ def main():
             elif opcion == "2":
                 pass
             elif opcion == "3":
-                pass
+                funciones_lineas.iniciar()
             elif opcion == "4":
                 pass
             elif opcion == "5":
