@@ -1,30 +1,27 @@
 """
-controlador/ctr_linea.py
+controlador/ctr_marca.py
 =========================
 El CONTROLADOR: es el "intermediario". Solo se encarga de GUARDAR y LEER las
-lineas en el archivo. No muestra menus ni pide datos (de eso se encarga la
-Vista) y no define que es una linea (de eso se encarga el Modelo).
+marcas en el archivo. No muestra menus ni pide datos (de eso se encarga la
+Vista) y no define que es una marca (de eso se encarga el Modelo).
 
-La Linea es un catalogo INDEPENDIENTE de la Categoria: tiene su propio
-archivo y no guarda ninguna referencia a otros catalogos.
-
-Cada linea se guarda como una fila de texto separada por comas:
+Cada marca se guarda como una fila de texto separada por comas:
     id,nombre
-Ejemplo:  1,Deportiva
+Ejemplo:  1,Nike
 """
 
 import os
 
 from config.conexion import conectar
-from modelo.mdl_linea import Linea
+from modelo.mdl_marca import Marca
 
 class Controlador:
 
     def listar(self):
         """
-        Obtiene todas las líneas desde PostgreSQL.
+        Obtiene todas las marcas desde PostgreSQL.
         """
-        lineas = []
+        marcas = []
         conexion = conectar()
 
         if conexion:
@@ -33,7 +30,7 @@ class Controlador:
 
                 cursor.execute("""
                     SELECT id, nombre
-                    FROM linea
+                    FROM marca
                     ORDER BY id ASC
                 """)
 
@@ -41,22 +38,22 @@ class Controlador:
 
                 for fila in filas:
                     id, nombre = fila
-                    lineas.append(Linea(nombre, id))
+                    marcas.append(Marca(nombre, id))
 
                 cursor.close()
 
             finally:
                 conexion.close()
 
-        return lineas
+        return marcas
 
     def agregar(self, nombre):
         """
-        Agrega una nueva línea en PostgreSQL.
+        Agrega una nueva marca en PostgreSQL.
         """
-        lineas = self.listar()
+        marcas = self.listar()
 
-        nuevo_id = Linea.siguiente_id(lineas)
+        nuevo_id = Marca.siguiente_id(marcas)
 
         conexion = conectar()
 
@@ -65,7 +62,7 @@ class Controlador:
                 cursor = conexion.cursor()
 
                 cursor.execute("""
-                    INSERT INTO linea (id, nombre)
+                    INSERT INTO marca (id, nombre)
                     VALUES (%s, %s)
                 """, (nuevo_id, nombre))
 
@@ -73,7 +70,7 @@ class Controlador:
 
                 cursor.close()
 
-                print("Linea agregada correctamente.")
+                print("Marca agregada correctamente.")
 
             except Exception:
                 conexion.rollback()
@@ -84,7 +81,7 @@ class Controlador:
 
     def editar(self, id, nombre):
         """
-        Modifica el nombre de una línea existente.
+        Modifica el nombre de una marca existente.
         """
         conexion = conectar()
 
@@ -93,21 +90,21 @@ class Controlador:
                 cursor = conexion.cursor()
 
                 cursor.execute("""
-                    UPDATE linea
+                    UPDATE marca
                     SET nombre = %s
                     WHERE id = %s
                 """, (nombre, id))
 
                 if cursor.rowcount == 0:
                     raise ValueError(
-                        f"No existe una linea con id {id}"
+                        f"No existe una marca con id {id}"
                     )
 
                 conexion.commit()
 
                 cursor.close()
 
-                print("Linea modificada correctamente.")
+                print("Marca modificada correctamente.")
 
             except Exception:
                 conexion.rollback()
@@ -118,7 +115,7 @@ class Controlador:
 
     def eliminar(self, id):
         """
-        Elimina una línea por su ID.
+        Elimina una marca por su ID.
         """
         conexion = conectar()
 
@@ -127,20 +124,20 @@ class Controlador:
                 cursor = conexion.cursor()
 
                 cursor.execute("""
-                    DELETE FROM linea
+                    DELETE FROM marca
                     WHERE id = %s
                 """, (id,))
 
                 if cursor.rowcount == 0:
                     raise ValueError(
-                        f"No existe una linea con id {id}"
+                        f"No existe una marca con id {id}"
                     )
 
                 conexion.commit()
 
                 cursor.close()
 
-                print("Linea eliminada correctamente.")
+                print("Marca eliminada correctamente.")
 
             except Exception:
                 conexion.rollback()
@@ -148,4 +145,3 @@ class Controlador:
 
             finally:
                 conexion.close()
-

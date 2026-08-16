@@ -1,0 +1,121 @@
+"""
+vista/view_categoria.py
+========================
+La VISTA: muestra el menu, pide los datos por teclado y muestra los
+resultados. Es la parte que "se ve". Cuando hay que guardar o leer datos,
+le pide ayuda al Controlador.
+"""
+
+from controlador.ctr_categoria import Controlador
+
+
+class Vista:
+
+    def __init__(self):
+        # La Vista usa un Controlador para guardar y leer los datos.
+        self.controlador = Controlador()
+
+    def iniciar(self):
+        # Este es el menu del catalogo: se repite hasta que el usuario elige regresar.
+        while True:
+            print("\n----- SISTEMA DE CATEGORIAS -----")
+            print("1. Agregar categoria")
+            print("2. Listar categorias")
+            print("3. Editar categoria")
+            print("4. Eliminar categoria")
+            print("5. Regresar")
+            opcion = input("Elige una opcion: ")
+
+            if opcion == "1":
+                self.agregar()
+            elif opcion == "2":
+                self.listar()
+            elif opcion == "3":
+                self.editar()
+            elif opcion == "4":
+                self.eliminar()
+            elif opcion == "5":
+                # Regresa al menu principal (solo rompe ESTE menu).
+                print("\nRegresando al menu principal...")
+                break
+            else:
+                print("\nOpcion no valida. Elige del 1 al 5.")
+
+    def mostrar(self, categorias):
+        # Muestra la lista numerada. El "id" es el identificador real y unico.
+        if len(categorias) == 0:
+            print("\nNo hay categorias guardadas.")
+            return
+        print("\n----- CATEGORIAS -----")
+        numero = 1
+        for c in categorias:
+            print(f"{numero}). (id: {c.id}) {c.nombre}")
+            numero = numero + 1
+
+    def agregar(self):
+        nombre = input("Nombre: ").strip()
+        if nombre == "":
+            print("Nombre no puede estar vacio.")
+            return
+
+        # try / except: si al guardar algo falla, NO se cae el programa.
+        try:
+            self.controlador.agregar(nombre)
+            print("\nCategoria agregada.")
+        except Exception as ex:
+            print(f"\nNo se pudo agregar la categoria: {ex}")
+
+    def listar(self):
+        categorias = self.controlador.listar()
+        self.mostrar(categorias)
+
+    def editar(self):
+        categorias = self.controlador.listar()
+        self.mostrar(categorias)
+        if len(categorias) == 0:
+            return
+
+        # Pedimos el ID del registro (el numero entre parentesis).
+        id = input("\nId de la categoria a editar: ")
+        if not id.isdigit():
+            print("El id debe ser un numero.")
+            return
+        id = int(id)
+
+        print("Escribe los datos nuevos:")
+        nombre = input("Nombre: ").strip()
+        if nombre == "":
+            print("Nombre no puede estar vacio.")
+            return
+
+        # try / except: si el id NO existe, el controlador lanza un error.
+        try:
+            self.controlador.editar(id, nombre)
+            print("\nCategoria actualizada.")
+        except Exception as ex:
+            print(f"\nNo se pudo editar la categoria: {ex}")
+
+    def eliminar(self):
+        categorias = self.controlador.listar()
+        self.mostrar(categorias)
+        if len(categorias) == 0:
+            return
+
+        # Pedimos el ID del registro (el numero entre parentesis).
+        id = input("\nId de la categoria a eliminar: ")
+        if not id.isdigit():
+            print("El id debe ser un numero.")
+            return
+        id = int(id)
+
+        confirm = input(f"Confirma eliminar la categoria con id {id}? (s/n): ").strip().lower()
+        if confirm != 's':
+            print("Operacion cancelada.")
+            return
+
+        # try / except: si el id NO existe, el controlador lanza un error.
+        try:
+            self.controlador.eliminar(id)
+            print("\nCategoria eliminada.")
+        except Exception as ex:
+            print(f"\nNo se pudo eliminar la categoria: {ex}")

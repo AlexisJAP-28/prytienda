@@ -10,17 +10,18 @@ Este es el archivo que se ejecuta para USAR el programa.
 #     python main.py
 """
 
-#from vista.view_marca import Vista as VistaMarca
-#from vista.view_categoria import Vista as VistaCategoria
+from vista.vista_marca import Vista as VistaMarca
+from vista.vista_categoria import Vista as VistaCategoria
 from vista.view_linea import Vista as VistaLinea
-#from vista.view_producto import Vista as VistaProducto
+from vista.vista_producto import Vista as VistaProducto
 
 def main():
     try:
         # Menu general: se repite hasta que el usuario elige salir.
-        #funciones_marcas = VistaMarca()
+        funciones_marca = VistaMarca()
+        funciones_categoria = VistaCategoria()
         funciones_lineas = VistaLinea()
-        #funciones_productos = VistaProducto()
+        funciones_productos = VistaProducto()
 
         while True:
             print("\n===== QUE QUIERES GESTIONAR? =====")
@@ -32,13 +33,14 @@ def main():
             opcion = input("Elige una opcion: ")
 
             if opcion == "1":
-                pass
+                funciones_marca.iniciar()
             elif opcion == "2":
-                pass
+                funciones_categoria.iniciar()
             elif opcion == "3":
                 funciones_lineas.iniciar()
             elif opcion == "4":
                 pass
+                funciones_productos.iniciar()
             elif opcion == "5":
                 print("\nHasta luego.")
                 break
@@ -46,7 +48,6 @@ def main():
                 print("\nOpcion no valida. Elige del 1 al 5.")
     except Exception as ex:
         print(f"Error en el programa: {ex}")
-
 
 if __name__ == "__main__":
     main()
